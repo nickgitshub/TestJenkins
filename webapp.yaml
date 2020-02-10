@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: TestJenkins-webapp
+  name: testjenkins-webapp
   labels:
     app: webapp
 spec:
