@@ -25,7 +25,7 @@ pipeline {
       }
     stage('Clean up directory'){
         steps{
-          sh'sudo rm -rf TestJenkins'
+          sh'cd /home/ubuntu/ && sudo rm -rf TestJenkins'
         }
       }
     }
