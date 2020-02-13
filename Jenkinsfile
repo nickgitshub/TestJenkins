@@ -21,7 +21,6 @@ pipeline {
     stage('Delete old Kubernetes Pods and deploy new ones'){
         steps{
           dir('TestJenkins'){
-                sh 'kubectl delete deployment.apps/testjenkins-webapp'
                 sh 'kubectl apply -f webapp.yaml'
                 sh 'kubectl apply -f webapp.service.yaml'
             }
