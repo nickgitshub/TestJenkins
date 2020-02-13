@@ -12,15 +12,18 @@ pipeline {
     }
     stage('Build Docker Container and commit to ECR') {
         steps {
-          sh 'sudo docker build ./TestJenkins -t webapp:latest' 
-          sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
-          sh 'VERSION=$(cat version)'
-          sh 'LATESTIMAGE=$(echo 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository[:$VERSION])'
-          sh 'echo $LATESTIMAGE'
-          sh 'sudo docker tag webapp:latest $LATESTIMAGE'
-          sh 'sudo docker push $LATESTIMAGE'
-          sh 'sudo docker tag webapp:latest 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'
-          sh 'sudo docker push 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'
+          withEnv(['PATH+EXTRA=/usr/sbin:/usr/bin:/sbin:/bin']) {  
+            sh 'sudo docker build ./TestJenkins -t webapp:latest' 
+            sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
+            sh 'VERSION=$(cat version)'
+            sh 'LATESTIMAGE=$(echo 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository[:$VERSION])'
+            sh 'echo $LATESTIMAGE'
+            sh 'sudo docker tag webapp:latest $LATESTIMAGE'
+            sh 'sudo docker push $LATESTIMAGE'
+            sh 'sudo docker tag webapp:latest 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'
+            sh 'sudo docker push 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'
+          }
+          
         }
     }
     stage('Delete old Kubernetes Pods and deploy new ones'){
