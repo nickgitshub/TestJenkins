@@ -1,34 +1,42 @@
 pipeline {
   agent any
   stages {
-    stage('Lint Index.html and Dockerfile'){
-        // hadolint can be used for the Dockerfile
+    stage('Pull and Lint Index.html and Dockerfile'){
         steps{
             sh 'WORKSPACE="$(pwd)"'
-            sh 'sudo git clone https://github.com/nickgitshub/TestJenkins && cd TestJenkins'
-            sh 'tidy index.html'
-            sh'hadolint Dockerfile' 
+            sh"git clone https://github.com/nickgitshub/TestJenkins" 
+            dir('TestJenkins'){
+                echo 'IN IT'
+                sh 'hadolint Dockerfile'
+                sh 'tidy index.html'
+            }
+            echo 'OUT OF IT'
+            sh 'ls'
         }
+    }
     stage('Build Docker Container and commit to ECR') {
         steps {
-          sh 'sudo docker build $WORKSPACE/TestJenkins -t webapp:latest' 
+          sh 'sudo docker build ./TestJenkins -t webapp:latest' 
           sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
           sh 'sudo docker tag webapp:latest 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'
           sh 'sudo docker push 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'
         }
-      }
-
-    stage('Deploy Container in EKS'){
+    }
+    stage('Delete old Kubernetes Pods and deploy new ones'){
         steps{
-          sh'kubectl apply -f webapp.yaml'
-          sh'kubectl apply -f webapp.service.yaml'
-        }
-      }
-    stage('Clean up directory'){
-        steps{
-          sh'cd $WORKSPACE && sudo rm -rf TestJenkins'
+          dir('TestJenkins'){
+                sh 'whoami'
+                //sh 'ls'
+                sh 'kubectl delete deployment.apps/testjenkins-webapp'
+                sh 'kubectl apply -f webapp.yaml'
+                sh 'kubectl apply -f webapp.service.yaml'
+            }
         }
     }
+    stage('Clean up directory'){
+        steps{
+          sh'rm -rf TestJenkins'
+        }
     }
   }
 }
