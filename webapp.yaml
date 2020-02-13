@@ -23,11 +23,4 @@ spec:
       - name: webapp
         image: 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest
         ports:
-        - containerPort: 80
-        readinessProbe:
-          httpGet:
-             path: /
-             port: 80
-             initialDelaySeconds: 5
-             periodSeconds: 5
-             successThreshold: 1
+
