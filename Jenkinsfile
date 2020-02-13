@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Pull and Lint Index.html and Dockerfile'){
         steps{
-            sh"git clone https://github.com/nickgitshub/TestJenkins" 
+            sh 'git clone https://github.com/nickgitshub/TestJenkins' 
             dir('TestJenkins'){
                 sh 'hadolint Dockerfile'
                 sh 'tidy index.html'
