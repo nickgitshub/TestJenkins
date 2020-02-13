@@ -3,15 +3,11 @@ pipeline {
   stages {
     stage('Pull and Lint Index.html and Dockerfile'){
         steps{
-            sh 'WORKSPACE="$(pwd)"'
             sh"git clone https://github.com/nickgitshub/TestJenkins" 
             dir('TestJenkins'){
-                echo 'IN IT'
                 sh 'hadolint Dockerfile'
                 sh 'tidy index.html'
             }
-            echo 'OUT OF IT'
-            sh 'ls'
         }
     }
     stage('Build Docker Container and commit to ECR') {
@@ -25,8 +21,6 @@ pipeline {
     stage('Delete old Kubernetes Pods and deploy new ones'){
         steps{
           dir('TestJenkins'){
-                sh 'whoami'
-                //sh 'ls'
                 sh 'kubectl delete deployment.apps/testjenkins-webapp'
                 sh 'kubectl apply -f webapp.yaml'
                 sh 'kubectl apply -f webapp.service.yaml'
