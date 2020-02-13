@@ -12,9 +12,12 @@ pipeline {
     }
     stage('Build Docker Container and commit to ECR') {
         steps {
+          sh 'VERSION=$(cat version)'
           sh 'sudo docker build ./TestJenkins -t webapp:latest' 
           sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
+          sh 'sudo docker tag webapp:latest 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:$VERSION'
           sh 'sudo docker tag webapp:latest 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'
+          sh 'sudo docker push 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:$VERSION'
           sh 'sudo docker push 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'
         }
     }
@@ -23,6 +26,7 @@ pipeline {
           dir('TestJenkins'){
                 sh 'kubectl apply -f webapp.yaml'
                 sh 'kubectl apply -f webapp.service.yaml'
+                sh 'kubectl set image deployment testjenkins-webapp webapp=235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:$VERSION'
             }
         }
     }
