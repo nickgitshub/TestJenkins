@@ -12,7 +12,7 @@ pipeline {
     }
     stage('Build Docker Container and commit to ECR') {
         environment {
-          VERSION = sh(script: 'cat version', returnStdout:true)
+          VERSION = "${sh(script: 'cat version', returnStdout:true)}"
         }
         steps {
             sh 'echo ${env.VERSION}'
