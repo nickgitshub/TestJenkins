@@ -5,8 +5,7 @@ pipeline {
     VERSION = "0.0.0"
     LATESTIMAGE = "235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest"
   }
-
-  }
+  
   stages {
     stage('Pull and Lint Index.html and Dockerfile'){
         steps{
