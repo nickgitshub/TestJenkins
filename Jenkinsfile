@@ -12,8 +12,8 @@ pipeline {
     }
     stage('Build Docker Container and commit to ECR') {
         environment{
-              VERSION=$(cat version)
-              LATESTIMAGE=$(echo 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:${VERSION})
+            VERSION = 0.0.0
+            LATESTIMAGE = 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:${VERSION}
         }
         steps {
             sh 'sudo docker build ./TestJenkins -t webapp:latest' 
