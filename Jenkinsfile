@@ -1,9 +1,7 @@
+VERSION = "??"
 
 pipeline {
   agent any
-  environment{
-    def VERSION = "${params.VERSION}"  
-  }
   stages {
     stage('Pull and Lint Index.html and Dockerfile'){
         steps{
