@@ -12,12 +12,12 @@ pipeline {
     }
     stage('Build Docker Container and commit to ECR') {
         environment {
-          Test = "test"
+          Test = sh(script: 'ls', returnStdout:true)
         }
         steps {
+            sh 'echo ${env.Test}'
             sh 'sudo docker build ./TestJenkins -t webapp:latest' 
             sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
-            sh 'echo ${LATESTIMAGE}'
             sh 'sudo docker tag webapp:latest ${LATESTIMAGE}'
             sh 'sudo docker push ${LATESTIMAGE}'
             sh 'sudo docker tag webapp:latest 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'
