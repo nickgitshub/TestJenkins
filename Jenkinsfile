@@ -20,7 +20,7 @@ pipeline {
         steps {
             sh 'sudo docker build ./TestJenkins -t webapp:latest' 
             sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
-            script{
+            environment{
               VERSION=$(cat version)
               LATESTIMAGE=$(echo 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:${VERSION})
             }
