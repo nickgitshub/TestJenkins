@@ -18,8 +18,6 @@ pipeline {
     }
     stage('Build Docker Container and commit to ECR') {
         steps {
-            sh 'cat ${workspace}/version'
-            sh 'cat /version'
             sh 'sudo docker build ./TestJenkins -t webapp:latest' 
             sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
             sh 'sudo docker tag webapp:latest 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:${VERSION}'
