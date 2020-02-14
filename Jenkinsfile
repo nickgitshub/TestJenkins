@@ -2,9 +2,9 @@ pipeline {
   agent any
   environment {
         // Using returnStdout
-        CC = """${sh(
+        VERSION = """${sh(
                 returnStdout: true,
-                script: 'echo "clang"'
+                script: 'cat version'
             )}""" 
         // Using returnStatus
         EXIT_STATUS = """${sh(
