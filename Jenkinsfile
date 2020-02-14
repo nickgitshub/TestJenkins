@@ -1,16 +1,10 @@
 pipeline {
   agent any
   environment {
-        // Using returnStdout
         VERSION = """${sh(
                 returnStdout: true,
                 script: 'cat version'
             )}""" 
-        // Using returnStatus
-        EXIT_STATUS = """${sh(
-                returnStatus: true,
-                script: 'exit 1'
-            )}"""
   }
   stages {
     stage('Pull and Lint Index.html and Dockerfile'){
