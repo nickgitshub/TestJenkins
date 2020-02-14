@@ -1,11 +1,5 @@
 pipeline {
   agent any
-
-  environment {
-    VERSION = "0.0.0"
-    LATESTIMAGE = "235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest"
-  }
-
   stages {
     stage('Pull and Lint Index.html and Dockerfile'){
         steps{
@@ -17,13 +11,13 @@ pipeline {
         }
     }
     stage('Build Docker Container and commit to ECR') {
+        environment{
+              VERSION=$(cat version)
+              LATESTIMAGE=$(echo 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:${VERSION})
+        }
         steps {
             sh 'sudo docker build ./TestJenkins -t webapp:latest' 
             sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
-            environment{
-              VERSION=$(cat version)
-              LATESTIMAGE=$(echo 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:${VERSION})
-            }
             sh 'echo ${LATESTIMAGE}'
             sh 'sudo docker tag webapp:latest ${LATESTIMAGE}'
             sh 'sudo docker push ${LATESTIMAGE}'
