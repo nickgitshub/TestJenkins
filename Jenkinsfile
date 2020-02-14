@@ -15,7 +15,7 @@ pipeline {
           VERSION = "${sh(script: 'cat version', returnStdout:true)}"
         }
         steps {
-            sh 'echo ${env.VERSION}'
+            echo '${env.VERSION}'
             sh 'sudo docker build ./TestJenkins -t webapp:latest' 
             sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
             sh 'sudo docker tag webapp:latest ${LATESTIMAGE}'
