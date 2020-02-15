@@ -30,10 +30,5 @@ pipeline {
             sh 'kubectl set image deployment testjenkins-webapp webapp=235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:$VERSION'
         }
     }
-    stage('Clean up directory'){
-        steps{
-          sh'rm -rf TestJenkins'
-        }
-    }
   }
 }
