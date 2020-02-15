@@ -23,9 +23,10 @@ pipeline {
             sh 'sudo docker push 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'  
         }
     }
-    stage('Update image set for webapp Pods (will initiate a rolling update if VERSION has changed)'){
+    stage('Deploy Pods using webapp templates'){
         steps{
-            sh 'kubectl set image deployment testjenkins-webapp webapp=235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:$VERSION'
+            sh 'kubectl apply -f webapp.yaml'
+            sh 'kubectl apply -f webapp.service.yaml'
         }
     }
   }
