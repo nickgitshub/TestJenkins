@@ -25,11 +25,9 @@ pipeline {
     }
     stage('Delete old Kubernetes Pods and deploy new ones'){
         steps{
-          dir('TestJenkins'){
-                sh 'kubectl apply -f webapp.yaml'
-                sh 'kubectl apply -f webapp.service.yaml'
-                sh 'kubectl set image deployment testjenkins-webapp webapp=235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:$VERSION'
-            }
+            sh 'kubectl apply -f webapp.yaml'
+            sh 'kubectl apply -f webapp.service.yaml'
+            sh 'kubectl set image deployment testjenkins-webapp webapp=235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:$VERSION'
         }
     }
     stage('Clean up directory'){
