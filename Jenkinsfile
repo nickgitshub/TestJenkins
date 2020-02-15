@@ -9,16 +9,13 @@ pipeline {
   stages {
     stage('Pull and Lint Index.html and Dockerfile'){
         steps{
-            sh 'git clone https://github.com/nickgitshub/TestJenkins' 
-            dir('TestJenkins'){
                 sh 'hadolint Dockerfile'
                 sh 'tidy index.html'
-            }
         }
     }
     stage('Build Docker Container and commit to ECR') {
         steps {
-            sh 'sudo docker build ./TestJenkins -t webapp:latest' 
+            sh 'sudo docker build . -t webapp:latest' 
             sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
             sh 'sudo docker tag webapp:latest 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:${VERSION}'
             sh 'sudo docker push 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:${VERSION}'
