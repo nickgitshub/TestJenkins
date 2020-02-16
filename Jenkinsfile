@@ -5,6 +5,10 @@ pipeline {
                 returnStdout: true,
                 script: 'cat version'
             )}""" 
+        REPO = """${sh(
+                returnStdout: true,
+                script: 'aws ecr describe-repositories --query repositories[0].repositoryUri --output text --region us-west-2'
+            )}"""
   }
   stages {
     stage('Pull and Lint Index.html and Dockerfile'){
@@ -17,15 +21,15 @@ pipeline {
         steps {
             sh 'sudo docker build . -t webapp:latest' 
             sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
-            sh 'sudo docker tag webapp:latest 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:${VERSION}'
-            sh 'sudo docker push 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:${VERSION}'
-            sh 'sudo docker tag webapp:latest 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'
-            sh 'sudo docker push 235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:latest'  
+            sh 'sudo docker tag webapp:latest ${REPO}:${VERSION}'
+            sh 'sudo docker push ${REPO}:${VERSION}'
+            sh 'sudo docker tag webapp:latest ${REPO}:latest'
+            sh 'sudo docker push ${REPO}:latest'  
         }
     }
     stage('Update image set for webapp Pods (will initiate a rolling update if VERSION has changed)'){
         steps{
-            sh 'kubectl set image deployment testjenkins-webapp webapp=235447109042.dkr.ecr.us-west-2.amazonaws.com/generic-repository:$VERSION'
+            sh 'kubectl set image deployment testjenkins-webapp webapp=${REPO}:$VERSION'
         }
     }
   }
