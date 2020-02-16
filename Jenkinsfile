@@ -7,7 +7,11 @@ pipeline {
             )}""" 
         REPO = """${sh(
                 returnStdout: true,
-                script: 'eval Output=$(aws ecr describe-repositories --query repositories[0].repositoryUri --region us-west-2) && echo $Output'
+                script: 'aws ecr describe-repositories --query repositories[0].repositoryUri --region us-west-2 --output text'
+            )}"""
+        REPO_VERSION = """${sh(
+                returnStdout: true,
+                script: 'REPOSITORY=$(aws ecr describe-repositories --query repositories[0].repositoryUri --region us-west-2 --output text) && VERSION=$(cat version) && Output="${REPOSITORY}:${VERSION}" && echo $Output'
             )}"""
   }
   stages {
@@ -21,8 +25,8 @@ pipeline {
         steps {
             sh 'sudo docker build . -t webapp:latest' 
             sh 'sudo $(aws ecr get-login --no-include-email --region us-west-2)'
-            sh 'sudo docker tag webapp:latest ${REPO}:${VERSION}'
-            sh 'sudo docker push ${REPO}:${VERSION}'
+            sh 'sudo docker tag webapp:latest ${REPO_VERSION}'
+            sh 'sudo docker push ${REPO_VERSION}'
             sh 'sudo docker tag webapp:latest ${REPO}:latest'
             sh 'sudo docker push ${REPO}:latest'  
         }
