@@ -7,7 +7,7 @@ pipeline {
             )}""" 
         REPO = """${sh(
                 returnStdout: true,
-                script: 'aws ecr describe-repositories --query repositories[0].repositoryUri --output text --region us-west-2'
+                script: 'eval Output=$(aws ecr describe-repositories --query repositories[0].repositoryUri --region us-west-2) && echo $Output'
             )}"""
   }
   stages {
